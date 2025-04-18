@@ -5,15 +5,13 @@ function App() {
   const [color, setColor] = useState<string>('#000000')
   const [colorArr, setColorArr] = useState<string[]>([])
 
-  function handleClickAnswer(selectedColor: string) {
+  const handleClickAnswer = (selectedColor: string) => {
     if (selectedColor === color) {
       alert('Correct!');
       generateColorGame();
     } else {
       alert('Wrong! Try again.');
-      // setColor(generateHexColor());
     }
-
   }
 
   const generateHexColor = () => {
@@ -25,34 +23,38 @@ function App() {
     return color;
   }
 
-  function generateColorGame() {
-    const colorAnswer = generateHexColor();
-    setColor(colorAnswer);
-    let colors = [];
-    if (colors.length <= 3) {
-      colors.push(colorAnswer);
-      for (let i = 0; i < 2; i++) {
-        colors.push(generateHexColor());
+  const generateColorGame = () => {
+    const colorAnswer = generateHexColor()
+    setColor(colorAnswer)
+
+    const colors = [colorAnswer]
+
+    // Add 2 unique decoys
+    while (colors.length < 3) {
+      const newColor = generateHexColor()
+      if (!colors.includes(newColor)) {
+        colors.push(newColor)
       }
-      setColorArr(colors);
     }
+
+    // Shuffle the array
+    const shuffled = colors.sort(() => Math.random() - 0.5)
+    setColorArr(shuffled)
   }
 
-  colorArr.sort(() => Math.random() - 0.5);
-
-
   useEffect(() => {
-    generateColorGame();
+    generateColorGame()
   }, [])
 
   return (
     <div className='container'>
-      <div className='content' style={{ backgroundColor: color }}>
+      <div className='content' style={{ backgroundColor: color, height: '200px', marginBottom: '20px' }} />
 
-      </div>
       <div className='buttonContainer'>
-        {colorArr.map((color) => (
-          <button key={color} onClick={()=>handleClickAnswer(color)} >{color}</button>
+        {colorArr.map((option) => (
+          <button key={option} onClick={() => handleClickAnswer(option)}>
+            {option}
+          </button>
         ))}
       </div>
     </div>
